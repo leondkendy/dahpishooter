@@ -47,7 +47,7 @@
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
-    
+
     const playerImg = new Image();
     playerImg.src = 'player.png'; // ganti dengan fotomu
 
@@ -61,12 +61,13 @@
     let bullets = [];
     let enemies = [];
     let gameInterval;
+    let spawnTimer = 0;
 
     function startGame() {
       document.getElementById('intro').style.display = 'none';
       bgm.play();
       spawnEnemies();
-      gameInterval = setInterval(gameLoop, 1000/60);
+      gameInterval = setInterval(gameLoop, 1000 / 60);
     }
 
     function spawnEnemies() {
@@ -90,7 +91,7 @@
       enemies.forEach((e, i) => {
         e.y += 2;
         ctx.drawImage(enemyImg, e.x, e.y, e.width, e.height);
-        
+
         // collision dengan player
         if (
           e.x < player.x + player.width &&
@@ -114,6 +115,13 @@
           }
         });
       });
+
+      // Spawn musuh baru setiap 3 detik
+      spawnTimer++;
+      if (spawnTimer > 180) { // 60 FPS x 3 detik = 180 frame
+        spawnEnemies();
+        spawnTimer = 0;
+      }
     }
 
     function endGame() {
