@@ -32,6 +32,16 @@
     canvas {
       background: transparent;
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      border: 3px solid white;
+    }
+    #scoreboard {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      font-size: 20px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 8px;
     }
   </style>
 </head>
@@ -39,6 +49,11 @@
   <div id="intro">
     <h1>DAHPI SHOOTER</h1>
     <button onclick="startGame()">START</button>
+  </div>
+
+  <div id="scoreboard">
+    Skor: <span id="score">0</span><br>
+    High Skor: <span id="highscore">0</span>
   </div>
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
@@ -63,6 +78,13 @@
     const bgm = document.getElementById('bgm');
     const sfx = document.getElementById('sfx');
 
+    const scoreEl = document.getElementById('score');
+    const highscoreEl = document.getElementById('highscore');
+
+    let score = 0;
+    let highscore = localStorage.getItem('highscore') || 0;
+    highscoreEl.textContent = highscore;
+
     let player = { x: 400, y: 500, width: 60, height: 60 };
     let bullets = [];
     let enemies = [];
@@ -72,8 +94,19 @@
     function startGame() {
       document.getElementById('intro').style.display = 'none';
       bgm.play();
+      score = 0;
+      updateScore();
       spawnEnemies();
       gameInterval = setInterval(gameLoop, 1000 / 60);
+    }
+
+    function updateScore() {
+      scoreEl.textContent = score;
+      if (score > highscore) {
+        highscore = score;
+        localStorage.setItem('highscore', highscore);
+        highscoreEl.textContent = highscore;
+      }
     }
 
     function spawnEnemies() {
@@ -116,6 +149,8 @@
           ) {
             enemies.splice(i, 1);
             bullets.splice(j, 1);
+            score += 10;
+            updateScore();
           }
         });
       });
