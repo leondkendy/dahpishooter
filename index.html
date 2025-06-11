@@ -8,15 +8,21 @@
       margin: 0;
       padding: 0;
       overflow: hidden;
-      background: black;
+      background: url('https://cdn.pixabay.com/photo/2022/05/02/08/09/long-exposure-7169151_1280.jpg') no-repeat center center fixed;
+      background-size: cover;
       font-family: Arial, sans-serif;
       color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
     }
     #intro {
       position: absolute;
       width: 100%;
       height: 100%;
-      background: #000;
+      background: rgba(0, 0, 0, 0.85);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -24,8 +30,8 @@
       z-index: 10;
     }
     canvas {
-      display: block;
-      background: #111;
+      background: transparent;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
   </style>
 </head>
@@ -36,7 +42,7 @@
   </div>
 
   <canvas id="gameCanvas" width="800" height="600"></canvas>
-  
+
   <audio id="bgm" loop>
     <source src="bgm.mp3" type="audio/mpeg">
   </audio>
@@ -49,10 +55,10 @@
     const ctx = canvas.getContext('2d');
 
     const playerImg = new Image();
-    playerImg.src = 'player.png'; // ganti dengan fotomu
+    playerImg.src = 'player.png';
 
     const enemyImg = new Image();
-    enemyImg.src = 'enemy.png'; // ganti dengan foto musuh
+    enemyImg.src = 'enemy.png';
 
     const bgm = document.getElementById('bgm');
     const sfx = document.getElementById('sfx');
@@ -92,7 +98,6 @@
         e.y += 2;
         ctx.drawImage(enemyImg, e.x, e.y, e.width, e.height);
 
-        // collision dengan player
         if (
           e.x < player.x + player.width &&
           e.x + e.width > player.x &&
@@ -102,7 +107,6 @@
           endGame();
         }
 
-        // collision dengan peluru
         bullets.forEach((b, j) => {
           if (
             b.x < e.x + e.width &&
@@ -116,9 +120,8 @@
         });
       });
 
-      // Spawn musuh baru setiap 3 detik
       spawnTimer++;
-      if (spawnTimer > 180) { // 60 FPS x 3 detik = 180 frame
+      if (spawnTimer > 180) {
         spawnEnemies();
         spawnTimer = 0;
       }
